@@ -1,96 +1,4 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_svg/svg.dart';
-// // import '../../backend/default/constant.dart';
-// import '../../backend/controllers/routes.dart';
-// import '../components/donut.dart';
-// import '../components/cardlist.dart';
-
-// class ProductPage extends StatelessWidget {
-//   const ProductPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: SafeArea(
-//         child: CustomScrollView(
-//           slivers: [
-//             SliverAppBar(
-//               floating: true,
-//               title: Center(
-//                   child: Padding(
-//                     padding: const EdgeInsets.only(top: 25.0),
-//                     child: SvgPicture.asset(
-//                       "assets/images/cashier_logo.svg",
-//                       height: 170,
-//                     ),
-//                   )
-//               ),
-//             ),
-//             const SliverToBoxAdapter(
-//               child: Padding(
-//                 padding: EdgeInsets.symmetric(
-//                   horizontal: 16.0,
-//                   vertical: 24.0,
-//                 ),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.center,
-//                   children: [
-//                     Text(
-//                       "PRODUCT",
-//                       style: TextStyle(
-//                         fontSize: 24,
-//                         fontWeight: FontWeight.bold,
-//                         letterSpacing: 1.2,
-//                         color: Colors.black,
-//                       ),
-//                     ),
-//                     SizedBox(height: 24),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: [
-//                         DonutItem(
-//                           color: Colors.green,
-//                           number: 5,
-//                           label: "Food",
-//                           iconPath: "assets/icons/food.svg",
-//                         ),
-//                         SizedBox(width: 60),
-//                         DonutItem(
-//                           color: Colors.green,
-//                           number: 0,
-//                           label: "Drink",
-//                           iconPath: "assets/icons/drink.svg",
-//                         ),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//             SliverToBoxAdapter(
-//               child: CardList(
-//                 title: 'Food',
-//                 onTap: () => Navigator.pushNamed(context, AppRoutes.foodProduct),
-//                 products: const [
-//                   ProductList(name: 'Nasi Goreng', stock: '20', price: '10000'),
-//                   ProductList(name: 'Nasi Pecel', stock: '24', price: '9000'),
-//                   ProductList(name: 'Bakmie', stock: '13', price: '10000'),
-//                   ProductList(name: 'Bakmie', stock: '13', price: '10000'),
-//                 ],
-//               ),
-//             ),
-//             // const SliverPadding(
-//             //   padding: EdgeInsets.symmetric(vertical: AppDefaults.padding),
-//             //   sliver: SliverToBoxAdapter(
-//             //     child: OurNewItem(),
-//             //   ),
-//             // ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+// ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -107,23 +15,24 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  List<ProductList> products = [];
+  List<ProductList> foodProducts = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchProducts();
+    fetchFoodProducts();
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchFoodProducts() async {
     final response = await Supabase.instance.client
-        .from('produk')
-        .select('namaProduk, stok, harga'); // Mengambil data produk
+        .from('produk') //nama tabel
+        .select('namaProduk, stok, harga') //field
+        .eq('jenis', 1); //filter
 
     final data = response as List<dynamic>;
     setState(() {
-      products = data.map((item) {
+      foodProducts = data.map((item) {
         return ProductList(
           name: item['namaProduk'],
           stock: item['stok'].toString(),
@@ -152,16 +61,16 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
                   vertical: 24.0,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "PRODUCT",
                       style: TextStyle(
                         fontSize: 24,
@@ -170,18 +79,18 @@ class _ProductPageState extends State<ProductPage> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         DonutItem(
                           color: Colors.green,
-                          number: 5,
+                          number: isLoading ? 0 : foodProducts.length,
                           label: "Food",
                           iconPath: "assets/icons/food.svg",
                         ),
-                        SizedBox(width: 60),
-                        DonutItem(
+                        const SizedBox(width: 60),
+                        const DonutItem(
                           color: Colors.green,
                           number: 0,
                           label: "Drink",
@@ -199,8 +108,8 @@ class _ProductPageState extends State<ProductPage> {
                   : CardList(
                       title: 'Food',
                       onTap: () =>
-                          Navigator.pushNamed(context, AppRoutes.foodProduct),
-                      products: products,
+                          Navigator.pushReplacementNamed(context, AppRoutes.foodProduct),
+                      products: foodProducts,
                     ),
             ),
           ],

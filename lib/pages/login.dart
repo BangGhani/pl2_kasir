@@ -168,6 +168,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
                 ),
               ),
               const SizedBox(height: 26,),
+              
               // Login Button
               SizedBox(
                 width: double.infinity,

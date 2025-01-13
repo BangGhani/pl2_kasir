@@ -1,66 +1,118 @@
-import 'package:flutter/material.dart';
-import '../../backend/controllers/routes.dart';
-import '../components/appbar.dart'; // Import file appbar.dart
+// ignore_for_file: library_private_types_in_public_api
 
-class FoodProduct extends StatelessWidget {
-  const FoodProduct({super.key});
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../backend/controllers/routes.dart';
+import '../../backend/controllers/product_controller.dart';
+import '../components/cardlistdetail.dart';
+import '../components/bottombutton.dart';
+
+class FoodProductPage extends StatefulWidget {
+  const FoodProductPage({super.key});
+
+  @override
+  _FoodProductPageState createState() => _FoodProductPageState();
+}
+
+class _FoodProductPageState extends State<FoodProductPage> {
+  List<ProductList> foodProducts = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFoodProducts();
+  }
+
+  Future<void> fetchFoodProducts() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('produk')
+          .select('produkID, namaProduk, stok, harga')
+          .eq('jenis', 1);
+
+      final data = response as List<dynamic>;
+      setState(() {
+        foodProducts = data.map((item) {
+          return ProductList(
+            id: item['produkID'],
+            name: item['namaProduk'],
+            stock: item['stok'].toString(),
+            price: item['harga'].toString(),
+            edit: navigator.pushNamed(context, AppRoutes.),
+            delete: () {
+              _deleteProduct(item['produkID']);
+            },
+          );
+        }).toList();
+        isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching products: $error')),
+      );
+    }
+  }
+
+  Future<void> _deleteProduct(int produkID) async {
+    ProductController productController = ProductController();
+    bool success = await productController.deleteProduct(produkID);
+
+    if (success) {
+      // Refresh the list after deleting
+      fetchFoodProducts();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Product deleted successfully')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete product')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0, // Hilangkan bayangan jika perlu
-        backgroundColor: Colors.transparent, // Gunakan latar belakang transparan
-        title: const Center(
-          child: Text(
-            'Food Products', // Judul halaman
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: Colors.black,
-            ),
+        elevation: 0,
+        title: const Text(
+          'Food Products',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: Colors.black,
           ),
         ),
-        actions: [
-          // Bisa menambahkan ikon atau tombol lainnya di appbar jika diperlukan
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, AppRoutes.home);
+          },
+        ),
+        backgroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            // Tampilan untuk produk makanan, bisa diisi dengan ListView atau GridView
             Expanded(
-              child: ListView(
-                children: [
-                  ListTile(
-                    title: const Text('Nasi Goreng'),
-                    subtitle: const Text('Stock: 20'),
-                    trailing: const Text('Rp 20.000'),
-                    onTap: () {
-                      // Tindakan ketika item produk ditekan
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Nasi Pecel'),
-                    subtitle: const Text('Stock: 24'),
-                    trailing: const Text('Rp 19.000'),
-                    onTap: () {
-                      // Tindakan ketika item produk ditekan
-                    },
-                  ),
-                  // Tambahkan item produk lainnya sesuai kebutuhan
-                ],
-              ),
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : CardList(
+                      products: foodProducts,
+                    ),
+            ),
+            GreenButton(
+              text: 'Add Product',
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.createProduct);
+              },
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: 0, // Indeks yang aktif, misalnya halaman Home
-        onNavTap: (index) {
-          // Tindakan untuk berpindah halaman jika bottom nav ditekan
-          Navigator.pushNamed(context, AppRoutes.home);
-        },
       ),
     );
   }
