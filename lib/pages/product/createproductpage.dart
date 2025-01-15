@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import '../../backend/controllers/routes.dart';
 import '../../backend/controllers/product_controller.dart';
 
@@ -15,18 +15,16 @@ class _CreateProductPageState extends State<CreateProductPage> {
   final _nameController = TextEditingController();
   final _stockController = TextEditingController();
   final _priceController = TextEditingController();
-  int _selectedType = 1; // 1 = Food, 2 = Drink
+  int _selectedType = 1;
 
   bool isLoading = false;
 
-  // Fungsi untuk menambahkan produk
   Future<void> createProduct() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         isLoading = true;
       });
 
-      // Memanggil ProductController untuk menambah produk
       final productController = ProductController();
       final success = await productController.createProduct(
         _nameController.text,
@@ -40,10 +38,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
       });
 
       if (success) {
-        // Navigasi ke halaman utama setelah berhasil
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {
-        // Tampilkan error jika gagal
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal menambahkan produk')),
         );
@@ -74,7 +70,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
           key: _formKey,
           child: ListView(
             children: [
-              // Nama Produk
+              const Text('Product Name'),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -91,8 +87,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // Stok Produk
+              const Text('Stock'),
               Row(
                 children: [
                   IconButton(
@@ -115,7 +110,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                       decoration: const InputDecoration(
                         labelText: 'Stok',
                         filled: true,
-                  fillColor: Color.fromARGB(255, 240, 249, 241),
+                        fillColor: Color.fromARGB(255, 240, 249, 241),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -142,11 +137,12 @@ class _CreateProductPageState extends State<CreateProductPage> {
                 ],
               ),
               const SizedBox(height: 16),
-
+              const Text('Price'),
               // Harga Produk
               TextFormField(
                 controller: _priceController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 decoration: const InputDecoration(
                   labelText: 'Harga',
                   prefixText: 'Rp ',

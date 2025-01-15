@@ -32,6 +32,7 @@ class _FoodProductPageState extends State<FoodProductPage> {
           .eq('jenis', 1);
 
       final data = response as List<dynamic>;
+
       setState(() {
         foodProducts = data.map((item) {
           return ProductList(
@@ -39,12 +40,28 @@ class _FoodProductPageState extends State<FoodProductPage> {
             name: item['namaProduk'],
             stock: item['stok'].toString(),
             price: item['harga'].toString(),
-            edit: navigator.pushNamed(context, AppRoutes.),
+            edit: () {
+              Navigator.pushNamed(
+                context,
+                AppRoutes.editProduct,
+                arguments: {
+                  'productId': item['produkID'],
+                  'name': item['namaProduk'],
+                  'stock': item['stok'],
+                  'price': item['harga'],
+                  'type': 1,
+                },
+              );
+            },
             delete: () {
               _deleteProduct(item['produkID']);
             },
           );
         }).toList();
+
+        // Sorting berdasarkan namaProduk dari kecil ke besar
+        foodProducts.sort((a, b) => a.name.compareTo(b.name));
+
         isLoading = false;
       });
     } catch (error) {

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../backend/default/constant.dart';
 import 'product/product.dart';
-import 'employee.dart';
-import 'cart.dart';
+import 'employee/employee.dart';
+import 'transaction/cart.dart';
 import 'finance.dart';
-import 'profile.dart';
+import 'profile/profile.dart';
 import 'components/appbar.dart';
 
 /// This page will contain all the bottom navigation tabs

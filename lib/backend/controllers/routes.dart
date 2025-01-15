@@ -12,13 +12,33 @@ class AppRoutes {
   static const String createProduct = '/createProduct';
   static const String editProduct = '/editProduct';
 
-  static Map<String, WidgetBuilder> getRoutes() {
-    return {
-      login: (context) => const Login(),
-      home: (context) => const HomePage(),
-      foodProduct: (context) => const FoodProductPage(),
-      createProduct: (context) => const CreateProductPage(),
-      editProduct: (context) => const EditProductPage(),
-    };
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case login:
+        return MaterialPageRoute(builder: (_) => const Login());
+      case home:
+        return MaterialPageRoute(builder: (_) => const HomePage());
+      case foodProduct:
+        return MaterialPageRoute(builder: (_) => const FoodProductPage());
+      case createProduct:
+        return MaterialPageRoute(builder: (_) => const CreateProductPage());
+      case editProduct:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => EditProductPage(
+            productId: args['productId'],
+            name: args['name'],
+            stock: args['stock'],
+            price: args['price'],
+            type: args['type'],
+          ),
+        );
+      default:
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Page not found')),
+          ),
+        );
+    }
   }
 }

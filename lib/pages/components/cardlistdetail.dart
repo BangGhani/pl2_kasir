@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 class CardList extends StatelessWidget {
@@ -89,11 +90,11 @@ class ProductList extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.blue),
+                  icon: SvgPicture.asset('assets/icons/edit.svg'),
                   onPressed: edit,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  icon: SvgPicture.asset('assets/icons/delete.svg'),
                   onPressed: delete,
                 ),
               ],

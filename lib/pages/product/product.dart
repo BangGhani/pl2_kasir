@@ -50,6 +50,7 @@ class _ProductPageState extends State<ProductPage> {
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
+              automaticallyImplyLeading: false,
               floating: true,
               title: Center(
                 child: Padding(
