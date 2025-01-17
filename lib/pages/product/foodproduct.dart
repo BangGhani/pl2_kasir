@@ -6,6 +6,8 @@ import '../../backend/controllers/routes.dart';
 import '../../backend/controllers/product_controller.dart';
 import '../components/cardlistdetail.dart';
 import '../components/bottombutton.dart';
+import 'createproductpage.dart';
+import 'editproductpage.dart';
 
 class FoodProductPage extends StatefulWidget {
   const FoodProductPage({super.key});
@@ -41,17 +43,16 @@ class _FoodProductPageState extends State<FoodProductPage> {
             stock: item['stok'].toString(),
             price: item['harga'].toString(),
             edit: () {
-              Navigator.pushNamed(
+              EditProductDialog.showEditProductDialog(
                 context,
-                AppRoutes.editProduct,
-                arguments: {
-                  'productId': item['produkID'],
-                  'name': item['namaProduk'],
-                  'stock': item['stok'],
-                  'price': item['harga'],
-                  'type': 1,
-                },
-              );
+                productId: item['produkID'],
+                name: item['namaProduk'],
+                stock: item['stok'],
+                price: item['harga'],
+                type: item['jenis'] ?? 1, 
+              ).then((_) {
+                fetchFoodProducts();
+              });
             },
             delete: () {
               _deleteProduct(item['produkID']);
@@ -79,7 +80,6 @@ class _FoodProductPageState extends State<FoodProductPage> {
     bool success = await productController.deleteProduct(produkID);
 
     if (success) {
-      // Refresh the list after deleting
       fetchFoodProducts();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Product deleted successfully')),
@@ -125,7 +125,7 @@ class _FoodProductPageState extends State<FoodProductPage> {
             GreenButton(
               text: 'Add Product',
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.createProduct);
+                CreateProductPage.createProduct(context);
               },
             ),
           ],

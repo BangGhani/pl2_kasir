@@ -16,23 +16,43 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   List<ProductList> foodProducts = [];
+  List<ProductList> drinkProducts = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchFoodProducts();
+    fetchDrinkProducts();
   }
 
   Future<void> fetchFoodProducts() async {
     final response = await Supabase.instance.client
         .from('produk') //nama tabel
-        .select('namaProduk, stok, harga') //field
+        .select() //field
         .eq('jenis', 1); //filter
 
     final data = response as List<dynamic>;
     setState(() {
       foodProducts = data.map((item) {
+        return ProductList(
+          name: item['namaProduk'],
+          stock: item['stok'].toString(),
+          price: item['harga'].toString(),
+        );
+      }).toList();
+      isLoading = false;
+    });
+  }
+  Future<void> fetchDrinkProducts() async {
+    final response = await Supabase.instance.client
+        .from('produk') 
+        .select()
+        .eq('jenis', 2);
+
+    final data = response as List<dynamic>;
+    setState(() {
+      drinkProducts = data.map((item) {
         return ProductList(
           name: item['namaProduk'],
           stock: item['stok'].toString(),
@@ -91,9 +111,9 @@ class _ProductPageState extends State<ProductPage> {
                           iconPath: "assets/icons/food.svg",
                         ),
                         const SizedBox(width: 60),
-                        const DonutItem(
+                        DonutItem(
                           color: Colors.green,
-                          number: 0,
+                          number: isLoading ? 0 : drinkProducts.length,
                           label: "Drink",
                           iconPath: "assets/icons/drink.svg",
                         ),
@@ -111,6 +131,16 @@ class _ProductPageState extends State<ProductPage> {
                       onTap: () =>
                           Navigator.pushReplacementNamed(context, AppRoutes.foodProduct),
                       products: foodProducts,
+                    ),
+            ),
+            SliverToBoxAdapter(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : CardList(
+                      title: 'Drink',
+                      onTap: () =>
+                          Navigator.pushReplacementNamed(context, AppRoutes.drinkProduct),
+                      products: drinkProducts,
                     ),
             ),
           ],
