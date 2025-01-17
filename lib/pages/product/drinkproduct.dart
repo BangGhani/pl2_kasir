@@ -124,8 +124,12 @@ class _DrinkProductPageState extends State<DrinkProductPage> {
             ),
             GreenButton(
               text: 'Add Product',
-              onPressed: () {
-                CreateProductPage.createProduct(context);
+              onPressed: () async {
+                bool result = await CreateProductPage.createProduct(
+                    context); // Memanggil fungsi createProduct dengan benar
+                if (result) {
+                  fetchDrinkProducts(); // Memperbarui data produk setelah berhasil menambah produk
+                }
               },
             ),
           ],

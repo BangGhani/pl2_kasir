@@ -49,7 +49,7 @@ class _FoodProductPageState extends State<FoodProductPage> {
                 name: item['namaProduk'],
                 stock: item['stok'],
                 price: item['harga'],
-                type: item['jenis'] ?? 1, 
+                type: item['jenis'] ?? 1,
               ).then((_) {
                 fetchFoodProducts();
               });
@@ -124,8 +124,11 @@ class _FoodProductPageState extends State<FoodProductPage> {
             ),
             GreenButton(
               text: 'Add Product',
-              onPressed: () {
-                CreateProductPage.createProduct(context);
+              onPressed: () async {
+                bool result = await CreateProductPage.createProduct(context);
+                if (result) {
+                  fetchFoodProducts();
+                }
               },
             ),
           ],
