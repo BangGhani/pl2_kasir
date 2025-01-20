@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import '../backend/default/constant.dart';
 import 'product/product.dart';
 import 'employee/employee.dart';
-import 'transaction/cart.dart';
+import 'transaction/transaction.dart';
 import 'finance.dart';
 import 'profile/profile.dart';
 import 'components/appbar.dart';
