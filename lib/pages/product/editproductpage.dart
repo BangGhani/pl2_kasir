@@ -151,12 +151,6 @@ class _EditProductDialogState extends State<EditProductDialog> {
                       fillColor: Color.fromARGB(255, 240, 249, 241),
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Stok tidak boleh kosong';
-                      }
-                      return null;
-                    },
                   ),
                 ),
                 IconButton(

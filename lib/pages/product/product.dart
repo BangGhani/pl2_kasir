@@ -28,9 +28,9 @@ class _ProductPageState extends State<ProductPage> {
 
   Future<void> fetchFoodProducts() async {
     final response = await Supabase.instance.client
-        .from('produk') //nama tabel
-        .select() //field
-        .eq('jenis', 1); //filter
+        .from('produk')
+        .select()
+        .eq('jenis', 1);
 
     final data = response as List<dynamic>;
     setState(() {

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../backend/default/constant.dart';
 import 'product/product.dart';
-import 'employee/employee.dart';
 import 'transaction/transaction.dart';
+import 'transaction/invoice.dart';
 import 'finance.dart';
 import 'profile/profile.dart';
 import 'components/appbar.dart';
@@ -18,19 +18,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  /// Current Page
+  // Current Page
   int currentIndex = 0;
 
-  /// On labelLarge navigation tap
+  // On labelLarge navigation tap
   void onBottomNavigationTap(int index) {
     currentIndex = index;
     setState(() {});
   }
 
-  /// All the pages
+  // All the pages
   List<Widget> pages = [
     const ProductPage(),
-    const EmployeePage(),
+    const InvoicePage(),
     const CartPage(),
     const FinancePage(),
     const ProfilePage(),

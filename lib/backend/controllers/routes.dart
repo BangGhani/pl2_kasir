@@ -3,16 +3,14 @@ import '../../pages/login.dart';
 import '../../pages/home.dart';
 import '../../pages/product/foodproduct.dart';
 import '../../pages/product/drinkproduct.dart';
-import '../../pages/product/createproductpage.dart';
-import '../../pages/product/editproductpage.dart';
+import '../../pages/transaction/invoice.dart';
 
 class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
   static const String foodProduct = '/foodProduct';
   static const String drinkProduct = '/drinkProduct';
-  static const String createProduct = '/createProduct';
-  static const String editProduct = '/editProduct';
+  static const String invoice = '/invoice';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -24,17 +22,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const FoodProductPage());
       case drinkProduct:
         return MaterialPageRoute(builder: (_) => const DrinkProductPage());
-      // case editProduct:
-      //   final args = settings.arguments as Map<String, dynamic>;
-      //   return MaterialPageRoute(
-      //     builder: (_) => EditProductPage(
-      //       productId: args['productId'],
-      //       name: args['name'],
-      //       stock: args['stock'],
-      //       price: args['price'],
-      //       type: args['type'],
-      //     ),
-      //   );
+      case invoice:
+        return MaterialPageRoute(builder: (_) => const InvoicePage());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
