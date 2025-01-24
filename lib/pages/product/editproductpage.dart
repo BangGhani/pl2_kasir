@@ -151,6 +151,18 @@ class _EditProductDialogState extends State<EditProductDialog> {
                       fillColor: Color.fromARGB(255, 240, 249, 241),
                       border: OutlineInputBorder(),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return null; 
+                      }
+
+                      final stock = int.tryParse(value);
+                      if (stock == null) {
+                        return 'Please input a valid number';
+                      }
+
+                      return null;
+                    },
                   ),
                 ),
                 IconButton(
@@ -173,7 +185,8 @@ class _EditProductDialogState extends State<EditProductDialog> {
             // Harga Produk
             TextFormField(
               controller: _priceController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
               decoration: const InputDecoration(
                 labelText: 'Harga',
                 prefixText: 'Rp ',
@@ -183,7 +196,12 @@ class _EditProductDialogState extends State<EditProductDialog> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Harga tidak boleh kosong';
+                  return 'Price cannot be empty';
+                }
+
+                final number = int.tryParse(value);
+                if (number == null) {
+                  return 'Please input a valid number';
                 }
                 return null;
               },

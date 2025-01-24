@@ -9,11 +9,19 @@ class SingleCartItemTile extends StatelessWidget {
     required this.title,
     required this.price,
     required this.type,
+    required this.stock,
+    required this.onRemove,
+    required this.onAdd,
+    required this.onDelete,
   });
 
   final String title;
-  final String price;
+  final double price;
   final String type;
+  final int stock;
+  final VoidCallback onRemove;
+  final VoidCallback onAdd;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +60,14 @@ class SingleCartItemTile extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: onRemove,
                         icon: SvgPicture.asset(AppIcons.removeQuantity),
                         constraints: const BoxConstraints(),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          '1',
+                          stock.toString(),
                           style:
                               Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     fontWeight: FontWeight.bold,
@@ -68,7 +76,7 @@ class SingleCartItemTile extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: onAdd,
                         icon: SvgPicture.asset(AppIcons.addQuantity),
                         constraints: const BoxConstraints(),
                       ),
@@ -83,13 +91,15 @@ class SingleCartItemTile extends StatelessWidget {
                 children: [
                   IconButton(
                     constraints: const BoxConstraints(),
-                    onPressed: () {},
+                    onPressed: onDelete,
                     icon: SvgPicture.asset(AppIcons.delete),
                   ),
                   const SizedBox(height: 8),
-                  Text(price),
+                  Text(
+                    'Rp ${price.toString()}',
+                  ),
                 ],
-              )
+              ),
             ],
           ),
           const Divider(thickness: 0.1),

@@ -16,7 +16,7 @@ class ItemTotalsAndPrice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(AppDefaults.padding),
+      padding: const EdgeInsets.all(AppDefaults.padding),
       child: Column(
         children: [
           ItemRow(
@@ -27,7 +27,7 @@ class ItemTotalsAndPrice extends StatelessWidget {
             title: 'Customer',
             value: customer,
           ),
-          DottedDivider(),
+          const DottedDivider(),
           ItemRow(
             title: 'Total Price',
             value: totalPrice,

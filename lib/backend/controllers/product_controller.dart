@@ -1,6 +1,15 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProductController {
+  Future<List<Map<String, dynamic>>> fetchProducts() async {
+    try {
+      final response = await Supabase.instance.client.from('produk').select();
+      // Return the list of products
+      return response;
+    } catch (error) {
+      throw Exception('Error fetching products: $error');
+    }
+  }
   // Create a new product
   Future<bool> createProduct(
       String name, int stock, double price, int type) async {

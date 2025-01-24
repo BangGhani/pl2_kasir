@@ -5,11 +5,11 @@ import '../backend/default/constant.dart';
 import 'product/product.dart';
 import 'transaction/transaction.dart';
 import 'transaction/invoice.dart';
-import 'finance.dart';
+import 'account/customer.dart';
 import 'profile/profile.dart';
 import 'components/appbar.dart';
 
-/// This page will contain all the bottom navigation tabs
+// This page will contain all the bottom navigation tabs
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     const ProductPage(),
     const InvoicePage(),
     const CartPage(),
-    const FinancePage(),
+    const CustomerPage(),
     const ProfilePage(),
   ];
 
