@@ -121,3 +121,24 @@ class DottedDivider extends StatelessWidget {
     }
   }
 }
+
+class AcceptButton extends StatelessWidget {
+  const AcceptButton({super.key, required this.onPressed});
+  final VoidCallback onPressed;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppDefaults.padding),
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(AppDefaults.padding),
+          child: ElevatedButton(
+            onPressed: onPressed,
+            child: const Text('Confirm'),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -9,7 +9,7 @@ class SingleCartItemTile extends StatelessWidget {
     required this.title,
     required this.price,
     required this.type,
-    required this.stock,
+    required this.total,
     required this.onRemove,
     required this.onAdd,
     required this.onDelete,
@@ -18,7 +18,7 @@ class SingleCartItemTile extends StatelessWidget {
   final String title;
   final double price;
   final String type;
-  final int stock;
+  final int total;
   final VoidCallback onRemove;
   final VoidCallback onAdd;
   final VoidCallback onDelete;
@@ -67,7 +67,7 @@ class SingleCartItemTile extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          stock.toString(),
+                          total.toString(),
                           style:
                               Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     fontWeight: FontWeight.bold,

@@ -26,43 +26,54 @@ class _CartPageState extends State<CartPage> {
   List<String> customerList = [];
   List<Map<String, dynamic>> productList = [];
   List<Map<String, dynamic>> cartItems = [];
-  int totalStock = 0;
-  int itemStock = 0;
+  int total = 0;
+  int totalPrice = 0;
+
+  void calculateTotalPrice() {
+    setState(() {
+      totalPrice = cartItems.fold<int>(
+        0,
+        (previousValue, item) =>
+            previousValue + (item['harga'] as int) * (item['total'] as int),
+      );
+    });
+  }
 
   void addToCart(Map<String, dynamic> product) {
     setState(() {
       cartItems.add({
         ...product,
-        'stock': 1,
+        'total': 1,
       });
-      itemStock = cartItems.last['stock'];
-      totalStock += 1;
+      total += 1;
     });
+    calculateTotalPrice();
   }
 
   void onAdd(int index) {
     setState(() {
-      cartItems[index]['stock'] += 1;
-      itemStock = cartItems[index]['stock'];
-      totalStock += 1;
+      cartItems[index]['total'] += 1;
+      total += 1;
     });
+    calculateTotalPrice();
   }
 
   void onRemove(int index) {
     setState(() {
-      if (cartItems[index]['stock'] > 1) {
-        cartItems[index]['stock'] -= 1;
+      if (cartItems[index]['total'] > 1) {
+        cartItems[index]['total'] -= 1;
+        total -= 1;
       }
-      itemStock = cartItems[index]['stock'];
-      totalStock -= 1;
     });
+    calculateTotalPrice();
   }
 
   void onDelete(int index) {
     setState(() {
+      total -= cartItems[index]['total'] as int;
       cartItems.removeAt(index);
-      totalStock -= 1;
     });
+    calculateTotalPrice();
   }
 
   @override
@@ -131,9 +142,11 @@ class _CartPageState extends State<CartPage> {
                                       .contains(textValue.text.toLowerCase()));
                             },
                             displayStringForOption: (option) {
-                              String jenis = option['jenis'] == 1 ? 'Food'
-                                : option['jenis'] == 2 ? 'Drink' 
-                                : 'Others';
+                              String jenis = option['jenis'] == 1
+                                  ? 'Food'
+                                  : option['jenis'] == 2
+                                      ? 'Drink'
+                                      : 'Others';
                               return '${option['namaProduk']} ($jenis)';
                             },
                             onSelected: (Map<String, dynamic> selectedProduct) {
@@ -213,7 +226,7 @@ class _CartPageState extends State<CartPage> {
                         title: item['namaProduk'],
                         price: item['harga'],
                         type: item['jenis'] == 1 ? 'Food' : 'Drink',
-                        stock: item['stock'],
+                        total: item['total'],
                         onAdd: () => onAdd(itemIndex),
                         onRemove: () => onRemove(itemIndex),
                         onDelete: () => onDelete(itemIndex),
@@ -243,23 +256,12 @@ class _CartPageState extends State<CartPage> {
                       ),
                     ),
                     ItemTotalsAndPrice(
-                      totalItem: totalStock,
-                      totalPrice: cartItems(
-                        (previousValue, item) =>
-                            previousValue +
-                            (item['harga'] as int) * item['stock'],
-                      ).toString(), // Convert the result to a string
-                      customer: selectedCustomer ?? 'Select Customer',
+                      totalItem: total,
+                      totalPrice: totalPrice.toString(),
+                      customer: selectedCustomer ?? 'Non Member',
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppDefaults.padding),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Checkout'),
-                        ),
-                      ),
+                    AcceptButton(
+                      onPressed: () {},
                     ),
                   ],
                 ),
