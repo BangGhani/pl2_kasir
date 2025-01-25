@@ -1,6 +1,16 @@
-# flutterviz
+# eCashier Application
 
-A new Flutter project.
+eCashier adalah aplikasi kasir berbasis Flutter yang dirancang untuk membantu pengelolaan transaksi dan inventaris dengan mudah dan efisien.
+
+## Fitur
+
+- **Manajemen Transaksi**: Tambah, edit, dan hapus transaksi dengan mudah.
+- **Inventaris Produk**: Kelola daftar produk termasuk stok, harga, dan deskripsi.
+- **Pengelolaan Pelanggan**: Kelola pelanggan yang berlangganan.
+- **Pencarian Produk**: Cari produk dengan cepat menggunakan fitur pencarian.
+- **Pengaturan Pengguna**: Kelola pengguna aplikasi dengan berbagai tingkat akses.
+
+
 
 ## Getting Started
 

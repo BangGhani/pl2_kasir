@@ -1,6 +1,8 @@
-build/linux/
+build/
+linux/
 macos/
 test/
 windows/
 android/
 build/
+ios/
