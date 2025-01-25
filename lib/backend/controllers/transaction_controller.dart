@@ -3,14 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class CustomerController {
   final supabase = Supabase.instance.client;
 
-  Future<List<String>> fetchCustomers() async {
+  Future<List<Map<String, dynamic>>> fetchCustomers() async {
     try {
       final response = await supabase.from('pelanggan').select();
 
       if (response != null) {
-        return List<String>.from(
-          response.map((customer) => customer['namaPelanggan']),
-        );
+        return List<Map<String, dynamic>>.from(response);
       }
       return [];
     } catch (e) {
@@ -37,57 +35,38 @@ class ProductController {
 }
 
 class TransactionController {
-  var supabase = Supabase.instance.client;
-
-  TransactionController(this.supabase);
-
   Future<void> addTransaction({
-    required String pelangganID,
+    required pelangganID,
     required int totalHarga,
     required List<Map<String, dynamic>> cartItems,
   }) async {
     try {
-      // Step 1: Insert into 'penjualan' table
-      final penjualanResponse = await supabase
-          .from('penjualan')
-          .insert({
-            'tanggalPenjualan': DateTime.now().toIso8601String(),
-            'totalHarga': totalHarga,
-            'pelangganID': pelangganID,
-          })
-          .select('penjualanID')
-          .single();
+      final penjualanResponse =
+          await Supabase.instance.client.from('penjualan').insert({
+        'tanggalPenjualan': DateTime.now().toIso8601String(),
+        'totalHarga': totalHarga,
+        'pelangganID': pelangganID,
+      }).select(); // Menggunakan .select() untuk mendapatkan response
 
-      if (penjualanResponse == null ||
-          penjualanResponse['penjualanID'] == null) {
-        throw Exception('Failed to insert transaction into penjualan table.');
-      }
+      final penjualanID = penjualanResponse[0]['penjualanID'];
 
-      final penjualanID = penjualanResponse['penjualanID'];
-
-      // Step 2: Insert into 'detailPenjualan' table
-      final List<Map<String, dynamic>> detailPenjualanData =
-          cartItems.map((item) {
+      final List<Map<String, dynamic>> detailPenjualan = cartItems.map((item) {
         return {
           'penjualanID': penjualanID,
-          'produkID': item['produkID'], // Assuming this key exists in cartItems
-          'jumlahProduk': item['total'], // From cartItems[index]['total']
+          'produkID': item['produkID'],
+          'jumlahProduk': item['total'],
           'subTotal': (item['harga'] as int) * (item['total'] as int),
         };
       }).toList();
 
-      final detailResponse =
-          await supabase.from('detailPenjualan').insert(detailPenjualanData);
-
-      if (detailResponse == null) {
-        throw Exception(
-            'Failed to insert transaction details into detailPenjualan table.');
-      }
+      await Supabase.instance.client
+          .from('detailpenjualan')
+          .insert(detailPenjualan);
 
       print('Transaction successfully added!');
     } catch (e) {
       print('Error adding transaction: $e');
-      rethrow; // Re-throw the error to handle it in the calling code if needed
+      rethrow;
     }
   }
 }

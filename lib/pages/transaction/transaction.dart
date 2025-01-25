@@ -5,6 +5,7 @@ import '../../backend/default/constant.dart';
 import '../../backend/controllers/transaction_controller.dart';
 import '../components/transactiondetalis.dart';
 import '../components/transactionlist.dart';
+import '../components/successsalert.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({
@@ -21,11 +22,13 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   final CustomerController _customerController = CustomerController();
   final ProductController _productController = ProductController();
+  final TransactionController _transactionController = TransactionController();
 
+  List<Map<String, dynamic>> customerList = [];
   String? selectedCustomer;
-  List<String> customerList = [];
   List<Map<String, dynamic>> productList = [];
   List<Map<String, dynamic>> cartItems = [];
+
   int total = 0;
   int totalPrice = 0;
 
@@ -135,7 +138,6 @@ class _CartPageState extends State<CartPage> {
                                 return const Iterable<
                                     Map<String, dynamic>>.empty();
                               }
-                              // Filter productList berdasarkan query
                               return productList.where((product) =>
                                   product['namaProduk']
                                       .toLowerCase()
@@ -182,8 +184,8 @@ class _CartPageState extends State<CartPage> {
                                 alignment: Alignment.topLeft,
                                 child: Material(
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width -
-                                        32, // Lebar dropdown
+                                    width:
+                                        MediaQuery.of(context).size.width - 32,
                                     margin: const EdgeInsets.all(8.0),
                                     child: ListView.builder(
                                       shrinkWrap: true,
@@ -242,10 +244,10 @@ class _CartPageState extends State<CartPage> {
                         value: selectedCustomer,
                         isExpanded: true,
                         hint: const Text('Select Customer'),
-                        items: customerList.map((String customer) {
+                        items: customerList.map((customer) {
                           return DropdownMenuItem<String>(
-                            value: customer,
-                            child: Text(customer),
+                            value: customer['namaPelanggan'],
+                            child: Text(customer['namaPelanggan']),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
@@ -261,7 +263,42 @@ class _CartPageState extends State<CartPage> {
                       customer: selectedCustomer ?? 'Non Member',
                     ),
                     AcceptButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        try {
+                          // Ambil data pelanggan
+                          final selectedCustomerData = customerList.firstWhere(
+                              (customer) =>
+                                  customer['namaPelanggan'] == selectedCustomer,
+                              orElse: () => {});
+
+                          if (cartItems.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Please add a product.')),
+                            );
+                            return;
+                          }
+
+                          await _transactionController.addTransaction(
+                            pelangganID: selectedCustomerData['pelangganID'],
+                            totalHarga: totalPrice,
+                            cartItems: cartItems,
+                          );
+
+                          setState(() {
+                            cartItems.clear();
+                            total = 0;
+                            totalPrice = 0;
+                            selectedCustomer = null;
+                          });
+                          showSuccessDialog(context);
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Failed to add transaction: $e')),
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),
