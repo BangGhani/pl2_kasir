@@ -5,7 +5,7 @@ import '../backend/default/constant.dart';
 import 'product/product.dart';
 import 'transaction/transaction.dart';
 import 'transaction/invoice.dart';
-import 'account/customer.dart';
+import 'account/account.dart';
 import 'profile/profile.dart';
 import 'components/appbar.dart';
 
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     const ProductPage(),
     const InvoicePage(),
     const CartPage(),
-    const CustomerPage(),
+     AccountPage(),
     const ProfilePage(),
   ];
 

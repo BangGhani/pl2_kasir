@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'backend/controllers/routes.dart';
 import 'backend/default/appThemes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   await Supabase.initialize(
@@ -9,6 +10,7 @@ Future<void> main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdHJldG12bXF6bml3ZHZlbXBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxMzI0NDMsImV4cCI6MjA1MTcwODQ0M30.q0y3-EZM76BP0dVf7ko3_jTRt3RW_YCuZ5k6WiWpePI',
   );
+  await initializeDateFormatting('id_ID', null);
   runApp(const MyApp());
 }
 

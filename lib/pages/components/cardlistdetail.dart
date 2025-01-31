@@ -69,7 +69,7 @@ class ProductList extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Stok: $stock',
+                  'Stock: $stock',
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,

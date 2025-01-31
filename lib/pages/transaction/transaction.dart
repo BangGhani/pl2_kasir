@@ -265,7 +265,6 @@ class _CartPageState extends State<CartPage> {
                     AcceptButton(
                       onPressed: () async {
                         try {
-                          // Ambil data pelanggan
                           final selectedCustomerData = customerList.firstWhere(
                               (customer) =>
                                   customer['namaPelanggan'] == selectedCustomer,
