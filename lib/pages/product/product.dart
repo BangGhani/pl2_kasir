@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../backend/controllers/routes.dart';
 import '../components/donut.dart';
 import '../components/cardlist.dart';
+import '../components/appbar.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -27,10 +28,8 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Future<void> fetchFoodProducts() async {
-    final response = await Supabase.instance.client
-        .from('produk')
-        .select()
-        .eq('jenis', 1);
+    final response =
+        await Supabase.instance.client.from('produk').select().eq('jenis', 1);
 
     final data = response as List<dynamic>;
     setState(() {
@@ -44,11 +43,10 @@ class _ProductPageState extends State<ProductPage> {
       isLoading = false;
     });
   }
+
   Future<void> fetchDrinkProducts() async {
-    final response = await Supabase.instance.client
-        .from('produk') 
-        .select()
-        .eq('jenis', 2);
+    final response =
+        await Supabase.instance.client.from('produk').select().eq('jenis', 2);
 
     final data = response as List<dynamic>;
     setState(() {
@@ -69,19 +67,7 @@ class _ProductPageState extends State<ProductPage> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              floating: true,
-              title: Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 25.0),
-                  child: SvgPicture.asset(
-                    "assets/images/cashier_logo.svg",
-                    height: 170,
-                  ),
-                ),
-              ),
-            ),
+            const CustomSliverAppBar(),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -128,18 +114,21 @@ class _ProductPageState extends State<ProductPage> {
                   ? const Center(child: CircularProgressIndicator())
                   : CardList(
                       title: 'Food',
-                      onTap: () =>
-                          Navigator.pushReplacementNamed(context, AppRoutes.foodProduct),
+                      onTap: () => Navigator.pushReplacementNamed(
+                          context, AppRoutes.foodProduct),
                       products: foodProducts,
                     ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 20),
             ),
             SliverToBoxAdapter(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : CardList(
                       title: 'Drink',
-                      onTap: () =>
-                          Navigator.pushReplacementNamed(context, AppRoutes.drinkProduct),
+                      onTap: () => Navigator.pushReplacementNamed(
+                          context, AppRoutes.drinkProduct),
                       products: drinkProducts,
                     ),
             ),

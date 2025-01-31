@@ -14,7 +14,6 @@ class CreateProductPage {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-          // Menambahkan StatefulBuilder agar setState dapat digunakan
           builder: (context, setState) {
             return AlertDialog(
               title: const Center(child: Text('Add Product')),

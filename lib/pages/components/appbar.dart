@@ -2,6 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../backend/default/constant.dart';
 
+class CustomSliverAppBar extends StatelessWidget {
+  const CustomSliverAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      automaticallyImplyLeading: false,
+      floating: true,
+      title: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 25.0),
+          child: SvgPicture.asset(
+            "assets/images/cashier_logo.svg",
+            height: 170,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class BottomAppBarItem extends StatelessWidget {
   const BottomAppBarItem({
     super.key,

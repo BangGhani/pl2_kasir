@@ -259,7 +259,7 @@ class _CartPageState extends State<CartPage> {
                     ),
                     ItemTotalsAndPrice(
                       totalItem: total,
-                      totalPrice: totalPrice.toString(),
+                      totalPrice: 'Rp. $totalPrice',
                       customer: selectedCustomer ?? 'Non Member',
                     ),
                     AcceptButton(
