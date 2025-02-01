@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/default/constant.dart';
 
 class GreenButton extends StatelessWidget {
   final String text; // Teks tombol
@@ -13,13 +14,13 @@ class GreenButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(AppDefaults.padding),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green, // Warna tombol hijau
+          backgroundColor: AppColors.primary, // Warna tombol hijau
           minimumSize: const Size.fromHeight(50), // Tinggi tombol
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // Radius sudut tombol
+            borderRadius: BorderRadius.circular(AppDefaults.radius), // Radius sudut tombol
           ),
         ),
         onPressed: onPressed,

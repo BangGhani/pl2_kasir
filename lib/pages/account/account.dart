@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../backend/default/constant.dart';
+import '../components/appbar.dart';
+import '../components/bottombutton.dart';
 
 class AccountPage extends StatefulWidget {
+  const AccountPage({super.key});
+
   @override
   _AccountPageState createState() => _AccountPageState();
 }
@@ -53,54 +58,28 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
-          SliverAppBar(
-            title: Text('Management Page'),
-            pinned: true,
-            floating: true,
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(50),
-              child: Container(
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                      onPressed: () => _onItemTapped(0),
-                      child: Text(
-                        'Customer',
-                        style: TextStyle(
-                          color:
-                              _selectedIndex == 0 ? Colors.blue : Colors.grey,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => _onItemTapped(1),
-                      child: Text(
-                        'Officer',
-                        style: TextStyle(
-                          color:
-                              _selectedIndex == 1 ? Colors.blue : Colors.grey,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          const CustomSliverAppBar(),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(AppDefaults.padding),
               child: Form(
                 key: _formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Label dan Field untuk Name
+                    const Text(
+                      'Name',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _nameController,
-                      decoration: InputDecoration(labelText: 'Name'),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter your name',
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a name';
@@ -108,9 +87,21 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 20), // Jarak antara field
+
+                    // Label dan Field untuk Phone Number
+                    const Text(
+                      'Phone Number',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _phoneController,
-                      decoration: InputDecoration(labelText: 'Phone Number'),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter your phone number',
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a phone number';
@@ -118,9 +109,21 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 20),
+
+                    // Label dan Field untuk Address
+                    const Text(
+                      'Address',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _addressController,
-                      decoration: InputDecoration(labelText: 'Address'),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter your address',
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an address';
@@ -128,9 +131,21 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 20),
+
+                    // Label dan Field untuk Email
+                    const Text(
+                      'Email',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(labelText: 'Email'),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter your email',
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an email';
@@ -138,9 +153,21 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 20),
+
+                    // Label dan Field untuk Password
+                    const Text(
+                      'Password',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: InputDecoration(labelText: 'Password'),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter your password',
+                      ),
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -149,18 +176,16 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _register,
-                      child: Text('REGISTER'),
-                    ),
+                    const SizedBox(height: 20),
+
+                    // GreenButton(text: 'Register Account', onPressed: null),
                   ],
                 ),
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Divider(thickness: 2, color: Colors.grey),
+          const SliverToBoxAdapter(
+            child: Divider(thickness: 2, color: Colors.black),
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
@@ -168,7 +193,8 @@ class _AccountPageState extends State<AccountPage> {
                 final list = _selectedIndex == 0 ? _customers : _officers;
                 final account = list[index];
                 return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
                     title: Text(account['name']!),
                     subtitle: Column(

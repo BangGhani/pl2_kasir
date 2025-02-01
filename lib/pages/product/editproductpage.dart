@@ -86,7 +86,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
         Navigator.pop(context); // Tutup dialog
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal memperbarui produk')),
+          const SnackBar(content: Text('Failed to edit')),
         );
       }
     }
@@ -118,7 +118,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Nama produk tidak boleh kosong';
+                  return 'This field cannot be empty';
                 }
                 return null;
               },
@@ -196,7 +196,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Price cannot be empty';
+                  return 'This field cannot be empty';
                 }
 
                 final number = int.tryParse(value);
