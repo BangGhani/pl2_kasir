@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
     return MaterialApp(
-      title: 'eCahsier',
+      title: 'eCashier',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.defaultTheme,
       initialRoute: user != null ? AppRoutes.home : AppRoutes.login,

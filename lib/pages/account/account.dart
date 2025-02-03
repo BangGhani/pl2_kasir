@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../../backend/default/constant.dart';
+import '../../backend/controllers/account_controller.dart';
 import '../components/appbar.dart';
-import '../components/bottombutton.dart';
+import '../components/form.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -12,44 +12,41 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  int _selectedIndex = 0;
-  final List<Map<String, String>> _customers = [];
-  final List<Map<String, String>> _officers = [];
+  int selectedIndex = 0;
+  final List<Map<String, String>> customers = [];
+  final List<Map<String, String>> officers = [];
 
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final addressController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  void register() async {
+    if (formKey.currentState!.validate()) {
+      final name = nameController.text;
+      final phone = phoneController.text;
+      final address = addressController.text;
+      final email = emailController.text;
+      final password = passwordController.text;
 
-  void _register() {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        final account = {
-          'name': _nameController.text,
-          'phone': _phoneController.text,
-          'address': _addressController.text,
-          'email': _emailController.text,
-          'password': _passwordController.text,
-        };
-        if (_selectedIndex == 0) {
-          _customers.add(account);
-        } else {
-          _officers.add(account);
-        }
-        _nameController.clear();
-        _phoneController.clear();
-        _addressController.clear();
-        _emailController.clear();
-        _passwordController.clear();
-      });
+      try {
+        await registerCustomer(email, password, name, phone, address);
+        ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('CustomeraqQA registered successfully')),
+        );
+        // Bersihkan form setelah berhasil
+        nameController.clear();
+        phoneController.clear();
+        addressController.clear();
+        emailController.clear();
+        passwordController.clear();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed: $e')),
+        );
+      }
     }
   }
 
@@ -63,23 +60,14 @@ class _AccountPageState extends State<AccountPage> {
             child: Padding(
               padding: const EdgeInsets.all(AppDefaults.padding),
               child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Label dan Field untuk Name
-                    const Text(
-                      'Name',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter your name',
-                      ),
+                    CustomTextField(
+                      label: 'Name',
+                      hintText: 'Enter your name',
+                      controller: nameController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a name';
@@ -87,21 +75,11 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20), // Jarak antara field
-
-                    // Label dan Field untuk Phone Number
-                    const Text(
-                      'Phone Number',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _phoneController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter your phone number',
-                      ),
+                    CustomTextField(
+                      label: 'Phone Number',
+                      hintText: 'Enter your phone number',
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a phone number';
@@ -109,21 +87,10 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20),
-
-                    // Label dan Field untuk Address
-                    const Text(
-                      'Address',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _addressController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter your address',
-                      ),
+                    CustomTextField(
+                      label: 'Address',
+                      hintText: 'Enter your address',
+                      controller: addressController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an address';
@@ -131,21 +98,11 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20),
-
-                    // Label dan Field untuk Email
-                    const Text(
-                      'Email',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter your email',
-                      ),
+                    CustomTextField(
+                      label: 'Email',
+                      hintText: 'Enter your email',
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an email';
@@ -153,22 +110,11 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20),
-
-                    // Label dan Field untuk Password
-                    const Text(
-                      'Password',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter your password',
-                      ),
-                      obscureText: true,
+                    CustomTextField(
+                      label: 'Password',
+                      hintText: 'Enter your password',
+                      controller: passwordController,
+                      isPassword: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a password';
@@ -176,9 +122,10 @@ class _AccountPageState extends State<AccountPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20),
-
-                    // GreenButton(text: 'Register Account', onPressed: null),
+                    GreenButton(
+                      text: 'Register Account',
+                      onPressed: register,
+                    ),
                   ],
                 ),
               ),
@@ -190,11 +137,10 @@ class _AccountPageState extends State<AccountPage> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final list = _selectedIndex == 0 ? _customers : _officers;
+                final list = selectedIndex == 0 ? customers : officers;
                 final account = list[index];
                 return Card(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: const EdgeInsets.all(AppDefaults.margin),
                   child: ListTile(
                     title: Text(account['name']!),
                     subtitle: Column(
@@ -209,7 +155,7 @@ class _AccountPageState extends State<AccountPage> {
                 );
               },
               childCount:
-                  _selectedIndex == 0 ? _customers.length : _officers.length,
+                  selectedIndex == 0 ? customers.length : officers.length,
             ),
           ),
         ],

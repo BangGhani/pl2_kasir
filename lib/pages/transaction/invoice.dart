@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+
+import '../../backend/default/constant.dart';
 import '../components/appbar.dart';
 
 class InvoicePage extends StatefulWidget {
@@ -148,7 +150,7 @@ class _InvoicePageState extends State<InvoicePage> {
 
                 if (transactions.isEmpty) {
                   return const Padding(
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(AppDefaults.padding),
                     child: Center(
                       child: Text('No transactions available.'),
                     ),
@@ -160,12 +162,10 @@ class _InvoicePageState extends State<InvoicePage> {
                 final tanggalFormated = DateFormat('d MMMM yyyy', 'id_ID')
                     .format(DateTime.parse(tanggal));
                 final int totalHarga = transaction['totalHarga'];
-                final String namaPelanggan =
-                    transaction['pelangganID']['namaPelanggan'] ?? 'Non Member';
+                final String namaPelanggan = transaction['pelangganID']['namaPelanggan'] ?? 'Non Member';
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.all(AppDefaults.padding),
                   child: GestureDetector(
                     onTap: () => showTransactionDetails(
                         context, transaction['penjualanID']),
