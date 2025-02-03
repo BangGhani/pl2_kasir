@@ -11,20 +11,34 @@ class AccountPage extends StatefulWidget {
   _AccountPageState createState() => _AccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage> {
-  int selectedIndex = 0;
+class _AccountPageState extends State<AccountPage> with SingleTickerProviderStateMixin {
   final List<Map<String, String>> customers = [];
   final List<Map<String, String>> officers = [];
 
-  final formKey = GlobalKey<FormState>();
+  final formKeyCustomer = GlobalKey<FormState>(); // Ganti nama key untuk Customer
+  final formKeyOfficer = GlobalKey<FormState>();   // Ganti nama key untuk Officer
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void register() async {
-    if (formKey.currentState!.validate()) {
+  final officerNameController = TextEditingController();
+  final officerPhoneController = TextEditingController();
+  final officerAddressController = TextEditingController();
+  final officerEmailController = TextEditingController();
+  final officerPasswordController = TextEditingController();
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  void registerCustomerAccount() async {
+    if (formKeyCustomer.currentState!.validate()) {
       final name = nameController.text;
       final phone = phoneController.text;
       final address = addressController.text;
@@ -34,7 +48,7 @@ class _AccountPageState extends State<AccountPage> {
       try {
         await registerCustomer(email, password, name, phone, address);
         ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('CustomeraqQA registered successfully')),
+          const SnackBar(content: Text('Customer registered successfully')),
         );
         // Bersihkan form setelah berhasil
         nameController.clear();
@@ -50,6 +64,39 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
+  void registerOfficerAccount() async {
+    if (formKeyOfficer.currentState!.validate()) {
+      final name = officerNameController.text;
+      final phone = officerPhoneController.text;
+      final address = officerAddressController.text;
+      final email = officerEmailController.text;
+      final password = officerPasswordController.text;
+
+      try {
+        await registerCustomer(email, password, name, phone, address); // Bisa disesuaikan jika ada fungsi spesifik untuk officer
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Officer registered successfully')),
+        );
+        // Bersihkan form setelah berhasil
+        officerNameController.clear();
+        officerPhoneController.clear();
+        officerAddressController.clear();
+        officerEmailController.clear();
+        officerPasswordController.clear();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,105 +104,171 @@ class _AccountPageState extends State<AccountPage> {
         slivers: <Widget>[
           const CustomSliverAppBar(),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppDefaults.padding),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextField(
-                      label: 'Name',
-                      hintText: 'Enter your name',
-                      controller: nameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a name';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextField(
-                      label: 'Phone Number',
-                      hintText: 'Enter your phone number',
-                      controller: phoneController,
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a phone number';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextField(
-                      label: 'Address',
-                      hintText: 'Enter your address',
-                      controller: addressController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an address';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextField(
-                      label: 'Email',
-                      hintText: 'Enter your email',
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an email';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextField(
-                      label: 'Password',
-                      hintText: 'Enter your password',
-                      controller: passwordController,
-                      isPassword: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a password';
-                        }
-                        return null;
-                      },
-                    ),
-                    GreenButton(
-                      text: 'Register Account',
-                      onPressed: register,
-                    ),
-                  ],
-                ),
-              ),
+            child: TabBar(
+              controller: _tabController,
+              tabs: const [
+                Tab(text: 'Customer'),
+                Tab(text: 'Officer'),
+              ],
+              labelColor: Colors.blue, // Warna teks tab yang aktif
+              unselectedLabelColor: Colors.grey, // Warna teks tab yang tidak aktif
+              indicatorColor: Colors.blue, // Warna indikator tab
             ),
           ),
-          const SliverToBoxAdapter(
-            child: Divider(thickness: 2, color: Colors.black),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final list = selectedIndex == 0 ? customers : officers;
-                final account = list[index];
-                return Card(
-                  margin: const EdgeInsets.all(AppDefaults.margin),
-                  child: ListTile(
-                    title: Text(account['name']!),
-                    subtitle: Column(
+          SliverFillRemaining(
+            child: TabBarView(
+              controller: _tabController,
+              physics: NeverScrollableScrollPhysics(), // Nonaktifkan geser antar tab
+              children: [
+                // Tab Customer
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppDefaults.padding),
+                  child: Form(
+                    key: formKeyCustomer,  // Ganti key untuk form Customer
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Phone: ${account['phone']}'),
-                        Text('Address: ${account['address']}'),
-                        Text('Email: ${account['email']}'),
+                        CustomTextField(
+                          label: 'Name',
+                          hintText: 'Enter your name',
+                          controller: nameController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a name';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Phone Number',
+                          hintText: 'Enter your phone number',
+                          controller: phoneController,
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a phone number';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Address',
+                          hintText: 'Enter your address',
+                          controller: addressController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an address';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Email',
+                          hintText: 'Enter your email',
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an email';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Password',
+                          hintText: 'Enter your password',
+                          controller: passwordController,
+                          isPassword: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a password';
+                            }
+                            return null;
+                          },
+                        ),
+                        GreenButton(
+                          text: 'Register Customer Account',
+                          onPressed: registerCustomerAccount,
+                        ),
                       ],
                     ),
                   ),
-                );
-              },
-              childCount:
-                  selectedIndex == 0 ? customers.length : officers.length,
+                ),
+                // Tab Officer
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppDefaults.padding),
+                  child: Form(
+                    key: formKeyOfficer,  // Ganti key untuk form Officer
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          label: 'Officer Name',
+                          hintText: 'Enter officer name',
+                          controller: officerNameController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a name';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Phone Number',
+                          hintText: 'Enter officer phone number',
+                          controller: officerPhoneController,
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a phone number';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Address',
+                          hintText: 'Enter officer address',
+                          controller: officerAddressController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an address';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Email',
+                          hintText: 'Enter officer email',
+                          controller: officerEmailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an email';
+                            }
+                            return null;
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Password',
+                          hintText: 'Enter officer password',
+                          controller: officerPasswordController,
+                          isPassword: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a password';
+                            }
+                            return null;
+                          },
+                        ),
+                        GreenButton(
+                          text: 'Register Officer Account',
+                          onPressed: registerOfficerAccount,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
